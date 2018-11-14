@@ -1,7 +1,12 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var houseSchema = new Schema({
+var HouseSchema = new Schema({
+    user: {
+        // associate user by id 
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     street: {
        type: String,
        required: true
@@ -14,6 +19,10 @@ var houseSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     phone: {
         type: String
     },
@@ -21,13 +30,15 @@ var houseSchema = new Schema({
        type: String 
     },
     built: {
-        
+        type: String
     },
     rooms: {
-        type: String,   
+        type: String, 
+        required: true  
     },
     price: {
-        
+        type: String,
+        required: true
     },
     from: {
         type: Date,
@@ -36,16 +47,17 @@ var houseSchema = new Schema({
     to: {
         type: Date,
     },
-    comments: {
-        
+    details: {
+        type: String 
     },
     photo: {
 
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
+
 });
 
-var House = mongoose.model("House", houseSchema);
-
-// Export the House model
-module.exports = House;
-
+module.exports = House = mongoose.model('House', HouseSchema)
