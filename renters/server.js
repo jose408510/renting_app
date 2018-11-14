@@ -3,6 +3,8 @@ const app = express();
 const houses = require('./routes/api/houses')
 const users = require('./routes/api/users')
 const posts = require('./routes/api/posts')
+
+const passport = require('passport');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 3001;
@@ -14,6 +16,11 @@ app.use(bodyParser.json());
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
+//pasport middleware
+app.use(passport.initialize());
+// passport config
+require('./config/passport')(passport);
+
 
 app.use('/api/users', users);
 app.use('/api/houses', houses);
@@ -25,10 +32,6 @@ mongoose
   .connect(db)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
-
-app.get('/' , (req,res) => {
-  res.send('Hello')
-})
 
 // Start the API server
 app.listen(PORT, function() {
