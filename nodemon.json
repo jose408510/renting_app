@@ -1,0 +1,7 @@
+{
+    "env": {
+        "MONGO_USER": "daniel",
+        "MONGO_PASSWORD": "3RHiSLn2iYgQuzIb",
+        "MONGO_DB": "renting-app"
+    }
+}
