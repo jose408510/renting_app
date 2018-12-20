@@ -1,0 +1,19 @@
+{
+  "name": "renting_app",
+  "version": "1.0.0",
+  "description": "Online Market Place to compare Rents around the bay area to see if you are getting a good deal",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jose408510/renting_app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jose408510/renting_app/issues"
+  },
+  "homepage": "https://github.com/jose408510/renting_app#readme"
+}
