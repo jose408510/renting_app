@@ -10,17 +10,26 @@ router.get('/test', ( req, res ) => res.json({msg:"Users Works"
 // @public route
 // @register new users 
 router.post('/signup', ( req, res ) => {
-    const newUser = new Users({
-        email: req.body.email,
-        password: req.body.email
+    Users.findOne({email: req.body.email})
+    .then(user => {
+        if(user){
+            return res.status(400).json('User Already Exist');
+        } else{
+            const newUser = new Users({
+                email: req.body.email,
+                password: req.body.email
+            })
+            console.log(newUser)
+            newUser.save()
+        }
+        //    think about incorporating validator npm package... 
+        //    need validation to check things
     })
-    console.log(newUser)
-    newUser.save()
 })
 
 // @public router
 // @sign-in for exisiting users 
-router.get('/newusers', ( req, res ) => {
+router.get('/signin', ( req, res ) => {
     res.json({
         email: "pablo",
         password: "jose@email"
