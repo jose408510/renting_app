@@ -47,7 +47,7 @@ router.post('/signup', ( req, res ) => {
 
 // @public router
 // @sign-in for exisiting users 
-router.get('/signin', ( req, res ) => {
+router.post('/signin', ( req, res ) => {
     const { errors, isValid } = validateSignin(req.body);
 
     // Check Validation
