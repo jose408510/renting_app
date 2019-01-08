@@ -14,6 +14,8 @@ app.use(bodyParser.json());
 const users = require('./routes/api/users');
 // Using Routes 
 app.use('/api/users/',users)
+app.use('/api/profile',profiles)
+
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-fy13j.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`)
