@@ -1,18 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
 const app = express();
+const users = require('./routes/api/users');
+const profiles = require('./routes/api/profiles');
+
 
 
 const Port =  process.env.Port || 5000
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+//passport middleware
+app.use(passport.initialize());
+require('./config/passport')(passport)
 
 
-// Routes
-const users = require('./routes/api/users');
-const profiles = require('./routes/api/profiles');
 // Using Routes 
 app.use('/api/users/',users)
 app.use('/api/profiles/', profiles)
