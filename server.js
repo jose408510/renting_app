@@ -12,10 +12,10 @@ app.use(bodyParser.json());
 
 // Routes
 const users = require('./routes/api/users');
+const profiles = require('./routes/api/profiles');
 // Using Routes 
 app.use('/api/users/',users)
-app.use('/api/profile',profiles)
-
+app.use('/api/profiles/', profiles)
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-fy13j.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`)
