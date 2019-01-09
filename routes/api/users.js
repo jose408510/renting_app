@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken')
 const jsonkey = require('../../config/jsonkey')
+const passport = require('passport')
 // Validation Flies
 const validateSignup = require('../../validation/signup')
 const validateSignin = require('../../validation/signin')
@@ -81,8 +82,14 @@ router.post('/signin', ( req, res ) => {
             }
         })
     })
+})
 
 
+router.get('/current' , passport.authenticate('jwt', { session: false}), (req, res) =>  {
+    res.json({
+        id: req.user.id,
+        email: req.user.email
+    })
 })
 
 module.exports = router;
