@@ -11,22 +11,22 @@ module.exports = function validateInfo(data) {
   data.state = !isEmpty(data.state) ? data.state : '';
 
   if (Validator.isEmpty(data.name)) {
-    errors.name = 'School field is required';
+    errors.name = 'Name field is required';
   }
 
   if (Validator.isEmpty(data.bio)) {
-    errors.bio = 'Degree field is required';
+    errors.bio = 'Bio field is required';
   }
 
   if (Validator.isEmpty(data.phone)) {
-    errors.phone = 'Field of study field is required';
+    errors.phone = 'Phone field is required';
   }
 
   if (Validator.isEmpty(data.city)) {
-    errors.city = 'From date field is required';
+    errors.city = 'City Field is required';
   }
   if (Validator.isEmpty(data.state)) {
-    errors.state = 'From date field is required';
+    errors.state = 'State Field is required';
   }
 
   return {
