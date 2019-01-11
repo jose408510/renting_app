@@ -11,5 +11,12 @@ const Houses = require('../../models/Houses');
 router.get('/test', ( req, res ) => res.json({msg:"Users Works"
 }))
 
+router.get('/home' ,( req,res ) => {
+    // display all the home that are avalible
+})
+
+
+
+
 
 module.exports = router;
