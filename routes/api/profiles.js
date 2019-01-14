@@ -6,6 +6,8 @@ const passport = require('passport');
 // Load DbModel
 const Profiles = require('../../models/Profiles');
 const Users = require('../../models/Users');
+// validation files
+const validateProfile = require('../../validation/profile')
 
 router.get('/test', ( req, res ) => res.json({msg:"Users Works"
 }))
@@ -23,20 +25,23 @@ router.get('/' , passport.authenticate('jwt' , { session: false }), ( req,res ) 
 })
 
 router.post('/' , passport.authenticate('jwt' , { session: false }), ( req,res ) => {   
-    const errors = {}
+    const { errors, isValid } = validateProfile(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+      }    
     // Get fields
     const profileFields = {};
     profileFields.user = req.user.id;
     if (req.body.handle) profileFields.handle = req.body.handle;
     //info field
     profileFields.info = {};
-    if (req.body.name) profileFields.social.name = req.body.name;
-    if (req.body.bio) profileFields.social.bio = req.body.bio;
-    if (req.body.phone) profileFields.social.phone = req.body.phone;
-    if (req.body.workphone) profileFields.social.workphone = req.body.workphone;
-    if (req.body.website) profileFields.social.website = req.body.website;
-    if (req.body.city) profileFields.social.city = req.body.city;
-    if (req.body.state) profileFields.social.state = req.body.state;
+    if (req.body.name) profileFields.info.name = req.body.name;
+    if (req.body.bio) profileFields.info.bio = req.body.bio;
+    if (req.body.phone) profileFields.info.phone = req.body.phone;
+    if (req.body.workphone) profileFields.info.workphone = req.body.workphone;
+    if (req.body.website) profileFields.info.website = req.body.website;
+    if (req.body.city) profileFields.info.city = req.body.city;
+    if (req.body.state) profileFields.info.state = req.body.state;
     // social network
     profileFields.social = {};
     if (req.body.youtube) profileFields.social.youtube = req.body.youtube;
