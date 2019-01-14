@@ -11,13 +11,9 @@ const profilesSchema = new Schema ({
       required: true,
       max: 40
     },
-    info: [
+    info: 
       {
         name: {
-          type: String,
-          required: true
-        },
-        avatar: {
           type: String,
           required: true
         },
@@ -28,7 +24,7 @@ const profilesSchema = new Schema ({
         phone: {
           type: String,
         },
-        workPhone: {
+        workphone: {
           type: String
         },
         website : {
@@ -42,8 +38,7 @@ const profilesSchema = new Schema ({
           type: String,
           requred: true
         }
-      }
-    ],
+      },
     social: {
         youtube: {
           type: String
