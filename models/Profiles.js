@@ -56,6 +56,56 @@ const profilesSchema = new Schema ({
           type: String
         }
       },
+      description: [
+        {
+          street: {
+            type: String,  
+            required: true
+          },
+          zip: {
+              type: String
+          },
+          state: {
+            type: String,
+            required: true
+          },
+          city: {
+            type: String,
+            required: true 
+          },
+          image: {
+            id: String,
+            url: String
+          },
+          addinfo: {
+            type : String 
+          },
+          yearbuilt: {
+              type: String,
+              required: true
+          },
+          rooms: {
+              type: String,
+              required: true
+          },
+          bathroom: {
+              type: String,
+              required: true
+          },
+          parking: {
+              type: String,
+              required: true
+          },
+          price: {
+              type: String,
+              required: true
+          },
+          created: {
+              type: Date,
+              default: Date.now
+            }
+        }
+      ],
       date: {
         type: Date,
         default: Date.now
