@@ -63,7 +63,8 @@ const profilesSchema = new Schema ({
             required: true
           },
           zip: {
-              type: String
+              type: String,
+              required: true
           },
           state: {
             type: String,
@@ -74,11 +75,11 @@ const profilesSchema = new Schema ({
             required: true 
           },
           image: {
-            id: String,
-            url: String
+            type: [String],
           },
           addinfo: {
-            type : String 
+            type : String, 
+            require: true
           },
           yearbuilt: {
               type: String,

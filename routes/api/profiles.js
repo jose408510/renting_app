@@ -1,13 +1,37 @@
 const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');
-const passport = require('passport');
+      router = express.Router();
+      mongoose = require('mongoose');
+      passport = require('passport');
+      multer = require('multer');
+      cloudinary = require('cloudinary');
+      require('dotenv').config()
 
 // Load DbModel
 const Profiles = require('../../models/Profiles');
 const Users = require('../../models/Users');
 // validation files
 const validateProfile = require('../../validation/profile')
+
+
+const storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+const imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+const upload = multer({ storage: storage, fileFilter: imageFilter})
+
+cloudinary.config({ 
+  cloud_name: 'dznfmdosd', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 router.get('/test', ( req, res ) => res.json({msg:"Users Works"
 }))
@@ -103,6 +127,7 @@ router.get('/handle/:handle', (req, res) => {
         res.status(404).json({ profile: 'There is no profile for this user' })
       );
   });
+
   router.get('/all', (req, res) => {
     const errors = {};
   
@@ -135,27 +160,29 @@ router.get('/handle/:handle', (req, res) => {
     '/homes',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-    //   const { errors, isValid } = validateEducationInput(req.body);
+      const { errors, isValid } = validateEducationInput(req.body);
   
-      // Check Validation
       if (!isValid) {
         // Return any errors with 400 status
         return res.status(400).json(errors);
       }
   
       Profiles.findOne({ user: req.user.id }).then(profile => {
-        const newEdu = {
-          school: req.body.school,
-          degree: req.body.degree,
-          fieldofstudy: req.body.fieldofstudy,
-          from: req.body.from,
-          to: req.body.to,
-          current: req.body.current,
-          description: req.body.description
+        const newHome = {
+          street: req.body.street,
+          zip: req.body.zip,
+          state: req.body.state,
+          image: req.body.image.split(','),
+          addinfo: req.body.addinfo,
+          yearbuilt: req.body.yearbuilt,
+          rooms: req.body.rooms,
+          bathroom: req.body.bathroom,
+          parking: req.body.parking,
+          price: req.body.price,
+          created: req.body.created
         };
   
-        // Add to edu array
-        profile.education.unshift(newEdu);
+        profile.description.unshift(newHome);
   
         profile.save().then(profile => res.json(profile));
       });
