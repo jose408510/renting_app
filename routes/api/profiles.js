@@ -70,5 +70,96 @@ router.post('/' , passport.authenticate('jwt' , { session: false }), ( req,res )
     })
 })
     
+router.get('/handle/:handle', (req, res) => {
+    const errors = {};
+  // need to add houses here.. 
+
+    Profiles.findOne({ handle: req.params.handle })
+      .populate('user', 'name', 'bio' , 'city , state') // going to add house here to populate
+      .then(profile => {
+        if (!profile) {
+          errors.noprofile = 'There is no profile for this user';
+          res.status(404).json(errors);
+        }
+        res.json(profile);
+      })
+      .catch(err => res.status(404).json(err));
+  });
+
+  router.get('/user/:user_id', (req, res) => {
+    const errors = {};
+  
+    Profiles.findOne({ user: req.params.user_id })
+      .populate('user', 'name', 'bio' , 'city , state') // going to add house here to populate
+      .then(profile => {
+        if (!profile) {
+          errors.noprofile = 'There is no profile for this user';
+          res.status(404).json(errors);
+        }
+  
+        res.json(profile);
+      })
+      .catch(err =>
+        res.status(404).json({ profile: 'There is no profile for this user' })
+      );
+  });
+  router.get('/all', (req, res) => {
+    const errors = {};
+  
+    Profiles.find()
+    .populate('user', 'name', 'bio' , 'city , state') // going to add house here to populate
+        .then(profiles => {
+        if (!profiles) {
+          errors.noprofile = 'There are no profiles';
+          return res.status(404).json(errors);
+        }
+  
+        res.json(profiles);
+      })
+      .catch(err => res.status(404).json({ profile: 'There are no profiles' }));
+  });
+
+  router.delete(
+    '/',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+      Profiles.findOneAndRemove({ user: req.user.id }).then(() => {
+        Users.findOneAndRemove({ _id: req.user.id }).then(() =>
+          res.json({ success: true })
+        );
+      });
+    }
+  );
+
+  router.post(
+    '/homes',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+    //   const { errors, isValid } = validateEducationInput(req.body);
+  
+      // Check Validation
+      if (!isValid) {
+        // Return any errors with 400 status
+        return res.status(400).json(errors);
+      }
+  
+      Profiles.findOne({ user: req.user.id }).then(profile => {
+        const newEdu = {
+          school: req.body.school,
+          degree: req.body.degree,
+          fieldofstudy: req.body.fieldofstudy,
+          from: req.body.from,
+          to: req.body.to,
+          current: req.body.current,
+          description: req.body.description
+        };
+  
+        // Add to edu array
+        profile.education.unshift(newEdu);
+  
+        profile.save().then(profile => res.json(profile));
+      });
+    }
+  );
 
 module.exports = router;
