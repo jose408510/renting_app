@@ -190,19 +190,14 @@ router.get('/handle/:handle', (req, res) => {
       });
   });
 
-//   router.post('/homes/images',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
-//     cloudinary.uploader.upload(req.file.path, function(result) {
-      
-//       req.body.image = result.secure_url;
-
-//       Profiles.findOne({ user: req.user.id }).then(profile => {
-
-//         profile.description.unshift(req.body.image);
-  
-//         profile.save().then(profile => res.json(profile));
-
-//     });
-//   })  
-// });
+  router.delete('/homes/:home_id', passport.authenticate('jwt', {session: false}), (req, res) => {
+    Profiles.finOne({ user: req.user.id}).then(profile => {
+      const removeIndex = profile.description.map(item => item.id)
+      .indexOf(req.params.home_id);
+      profile.description.splice(removeIndex, 1);
+      profile.save().then(profile => res.json(profile))
+    })
+    .catch(err => res.status(404).json(err))
+  })
 
 module.exports = router;
