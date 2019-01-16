@@ -3,7 +3,7 @@ const express = require('express');
       mongoose = require('mongoose');
       passport = require('passport');
       multer   = require('multer');
-      path     = require('path')
+      // path     = require('path')
 // Load DbModel
 const Profiles = require('../../models/Profiles');
 const Users = require('../../models/Users');
@@ -152,14 +152,21 @@ router.get('/handle/:handle', (req, res) => {
     }
   );
 
-  router.post('/homes',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
+  router.post('/homes',passport.authenticate('jwt', { session: false }), upload.any('image'), (req, res) => {
     
     const { errors, isValid } = validateHome(req.body);
   
       if (!isValid) {
-        // Return any errors with 400 status
         return res.status(400).json(errors);
       }
+
+      var images = []
+      for(var i = 0; i< req.files.length; i++){
+          // console.log(req.files[i].filename)
+          let some = req.files[i].filename.split(',')
+          images.push(some)
+      }
+      // console.log(...images)
       
       Profiles.findOne({ user: req.user.id }).then(profile => {
         const newHome = {
@@ -167,7 +174,7 @@ router.get('/handle/:handle', (req, res) => {
           zip: req.body.zip,
           state: req.body.state,
           city: req.body.state,
-          image: req.file.path,
+          image: images,
           addinfo: req.body.addinfo,
           yearbuilt: req.body.yearbuilt,
           rooms: req.body.rooms,
@@ -176,6 +183,7 @@ router.get('/handle/:handle', (req, res) => {
           price: req.body.price,
           created: req.body.created
         };
+        // console.log(newHome.image)
         profile.description.unshift(newHome);
   
         profile.save().then(profile => res.json(profile));
