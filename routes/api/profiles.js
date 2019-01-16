@@ -3,14 +3,13 @@ const express = require('express');
       mongoose = require('mongoose');
       passport = require('passport');
       multer = require('multer');
-      cloudinary = require('cloudinary');
-      require('dotenv').config()
 
 // Load DbModel
 const Profiles = require('../../models/Profiles');
 const Users = require('../../models/Users');
 // validation files
-const validateProfile = require('../../validation/profile')
+const validateProfile = require('../../validation/profile');
+const validateHome = require('../../validation/home');
 
 
 const storage = multer.diskStorage({
@@ -26,12 +25,6 @@ const imageFilter = function (req, file, cb) {
     cb(null, true);
 };
 const upload = multer({ storage: storage, fileFilter: imageFilter})
-
-cloudinary.config({ 
-  cloud_name: 'dznfmdosd', 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 router.get('/test', ( req, res ) => res.json({msg:"Users Works"
 }))
@@ -156,23 +149,25 @@ router.get('/handle/:handle', (req, res) => {
     }
   );
 
-  router.post(
-    '/homes',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-      const { errors, isValid } = validateEducationInput(req.body);
+  router.post('/homes',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
+    
+    // const { errors, isValid } = validateHome(req.body);
   
-      if (!isValid) {
-        // Return any errors with 400 status
-        return res.status(400).json(errors);
-      }
-  
+    //   if (!isValid) {
+    //     // Return any errors with 400 status
+    //     return res.status(400).json(errors);
+    //   }
+    cloudinary.uploader.upload(req.file.path, function(result) {
+
+      req.body.image = result.secure_url;
+      
       Profiles.findOne({ user: req.user.id }).then(profile => {
         const newHome = {
           street: req.body.street,
           zip: req.body.zip,
           state: req.body.state,
-          image: req.body.image.split(','),
+          city: req.body.state,
+          image: req.body.image,
           addinfo: req.body.addinfo,
           yearbuilt: req.body.yearbuilt,
           rooms: req.body.rooms,
@@ -186,7 +181,22 @@ router.get('/handle/:handle', (req, res) => {
   
         profile.save().then(profile => res.json(profile));
       });
-    }
-  );
+    })
+  });
+
+//   router.post('/homes/images',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
+//     cloudinary.uploader.upload(req.file.path, function(result) {
+      
+//       req.body.image = result.secure_url;
+
+//       Profiles.findOne({ user: req.user.id }).then(profile => {
+
+//         profile.description.unshift(req.body.image);
+  
+//         profile.save().then(profile => res.json(profile));
+
+//     });
+//   })  
+// });
 
 module.exports = router;

@@ -75,7 +75,7 @@ const profilesSchema = new Schema ({
             required: true 
           },
           image: {
-            type: [String],
+            type: String,
           },
           addinfo: {
             type : String, 

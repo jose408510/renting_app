@@ -6,7 +6,6 @@ const app = express();
 const users = require('./routes/api/users');
 const profiles = require('./routes/api/profiles');
 const houses = require('./routes/api/houses')
-require('dotenv').config()
 
 
 
