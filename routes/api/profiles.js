@@ -2,8 +2,8 @@ const express = require('express');
       router = express.Router();
       mongoose = require('mongoose');
       passport = require('passport');
-      multer = require('multer');
-
+      multer   = require('multer');
+      path     = require('path')
 // Load DbModel
 const Profiles = require('../../models/Profiles');
 const Users = require('../../models/Users');
@@ -13,8 +13,11 @@ const validateHome = require('../../validation/home');
 
 
 const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
   filename: function(req, file, callback) {
-    callback(null, Date.now() + file.originalname);
+    callback(null, new Date().toISOString() + file.originalname);
   }
 });
 const imageFilter = function (req, file, cb) {
@@ -151,15 +154,12 @@ router.get('/handle/:handle', (req, res) => {
 
   router.post('/homes',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
     
-    // const { errors, isValid } = validateHome(req.body);
+    const { errors, isValid } = validateHome(req.body);
   
-    //   if (!isValid) {
-    //     // Return any errors with 400 status
-    //     return res.status(400).json(errors);
-    //   }
-    cloudinary.uploader.upload(req.file.path, function(result) {
-
-      req.body.image = result.secure_url;
+      if (!isValid) {
+        // Return any errors with 400 status
+        return res.status(400).json(errors);
+      }
       
       Profiles.findOne({ user: req.user.id }).then(profile => {
         const newHome = {
@@ -167,7 +167,7 @@ router.get('/handle/:handle', (req, res) => {
           zip: req.body.zip,
           state: req.body.state,
           city: req.body.state,
-          image: req.body.image,
+          image: req.file.path,
           addinfo: req.body.addinfo,
           yearbuilt: req.body.yearbuilt,
           rooms: req.body.rooms,
@@ -176,12 +176,10 @@ router.get('/handle/:handle', (req, res) => {
           price: req.body.price,
           created: req.body.created
         };
-  
         profile.description.unshift(newHome);
   
         profile.save().then(profile => res.json(profile));
       });
-    })
   });
 
 //   router.post('/homes/images',passport.authenticate('jwt', { session: false }), upload.single('image'), (req, res) => {
