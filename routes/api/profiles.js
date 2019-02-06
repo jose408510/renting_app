@@ -125,6 +125,7 @@ router.get('/handle/:handle', (req, res) => {
   });
 
   router.get('/all', (req, res) => {
+    // finding the user profile
     const errors = {};
   
     Profiles.find()
@@ -153,7 +154,7 @@ router.get('/handle/:handle', (req, res) => {
   );
 
   router.post('/homes',passport.authenticate('jwt', { session: false }), upload.any('image'), (req, res) => {
-    
+    // adding homes to the profile of the user 
     const { errors, isValid } = validateHome(req.body);
   
       if (!isValid) {
